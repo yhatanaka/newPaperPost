@@ -16,7 +16,7 @@ src_txt = ARGV.shift
 #     9900  ﾕｳﾁﾖｷﾞﾝｺｳ          18530                                 00417071                          3,394
 
 # -------(略) と10個以上続く行
-    postSep = /^-{10,}$/ 
+    postSep = /^-{10,}\n/ 
 # スペース何個か + No. + (コード1,コード2) + 支払人カナ名称
     format_1 = /^\s+([0-9]+)\s[ 0-9]{20}\s{5}([ｧ-ﾝﾞﾟ ]+).+/
     format_2 = //
@@ -32,17 +32,15 @@ begin
 
 # -------(略) と10個以上続く行を区切りに
     file.read.split(postSep).each do |entry|
-# スペース何個か 数字 スペース
+# format_1(つまり1行目のフォーマット) に合うか
         match_1 = entry.match(format_1)
         if (match_1 && match_1[1].to_i == serial_No + 1)
                 serial_No = match_1[1].to_i
                 person_kana = match_1[2]
-                puts match_1[1].to_s + " : " + match_1[2].to_s
-#              pp entry
         end #if
     end #each
   end #pen
-  puts 'last No. is ' + serial_No.to_s
+
 # 例外は小さい単位で捕捉する
 rescue SystemCallError => e
   puts %Q(class=[#{e.class}] message=[#{e.message}])
