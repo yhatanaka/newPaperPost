@@ -25,11 +25,6 @@ src_txt = ARGV.shift
 
 # 1行目 連番，契約者半角カナ
     serial_No = 0
-    person_kana = ''
-    person_kanji = ''
-    kouza_type = ''
-    kouza_No = ''
-    paement = ''
 
 begin
   File.open(src_txt) do |file|
