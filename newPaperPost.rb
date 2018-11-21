@@ -19,13 +19,13 @@ src_txt = ARGV.shift
     postSep = /^-{10,}\n/ 
 # スペース何個か + No. + (コード1,コード2) + 支払人カナ名称
     format_1 = /^\s+([0-9]+)\s[ 0-9]{20}\s{5}([ｧ-ﾝﾞﾟ ]+).+$/
-    format_2 = //
+    format_2 = /\s+(.+)$/
     format_3 = //
 
 # 1行目 連番，契約者半角カナ
     serial_No = 0
     person_kana = ""
-
+    person_kanji = ""
 
 begin
   File.open(src_txt) do |file|
@@ -37,6 +37,15 @@ begin
         if (match_1 && match_1[1].to_i == serial_No + 1)
                 serial_No = match_1[1].to_i
                 person_kana = match_1[2]
+# entry を改行で4行に分ける
+                entry_ary = entry.split("\n")
+# format_2(2行目のフォーマット)に合うか
+                match_2 = entry_ary[1].match(format_2)
+                if (match_2)
+                        person_kanji = match_2[1].to_s
+                end
+
+                puts serial_No.to_s + " : " + person_kana + ' : ' + person_kanji
         end #if
     end #each
   end #pen
