@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 require 'pp'
+require 'nkf'
 src_txt = ARGV.shift
 
 # -----------------------------------------------------------------------------------------------------------
@@ -39,7 +40,8 @@ begin
         match_1 = entry.match(format_1)
         if (match_1 && match_1[1].to_i == serial_No + 1)
                 serial_No = match_1[1].to_i
-                person_kana = match_1[2]
+# 半角カナ → 全角
+                person_kana = NKF.nkf("-Xw", match_1[2])
 # entry を改行で4行に分ける
                 entry_ary = entry.split("\n")
 # format_2(2行目のフォーマット)に合うか
