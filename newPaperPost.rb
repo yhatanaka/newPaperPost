@@ -20,12 +20,15 @@ src_txt = ARGV.shift
 # スペース何個か + No. + (コード1,コード2) + 支払人カナ名称
     format_1 = /^\s+([0-9]+)\s[ 0-9]{20}\s{5}([ｧ-ﾝﾞﾟ]+\s?[ｧ-ﾝﾞﾟ]+).+$/
     format_2 = /\s+(.+)$/
-    format_3 = //
+    format_3 = /^\s+.[0-9]+\s+[ｧ-ﾝﾞﾟ]+\s+([0-9]+)\s+([0-9]+)\s+([0-9,]+)/
 
 # 1行目 連番，契約者半角カナ
     serial_No = 0
-    person_kana = ""
-    person_kanji = ""
+    person_kana = ''
+    person_kanji = ''
+    kouza_type = ''
+    kouza_No = ''
+    paement = ''
 
 begin
   File.open(src_txt) do |file|
@@ -46,10 +49,12 @@ begin
                 end
                 match_3 = entry_ary[2].match(format_3)
                 if (match_3)
-                        
+                        kouza_type = match_3[1]
+                        kouza_No = match_3[2]
+                        paement = match_3[3]
                 end
 
-                puts serial_No.to_s + " : " + person_kana + ' : ' + person_kanji
+                puts [serial_No, person_kana, person_kanji, kouza_type, kouza_No, paement].join(',')
         end #if
     end #each
   end #pen
