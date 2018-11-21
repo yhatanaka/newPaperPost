@@ -44,6 +44,10 @@ begin
                 if (match_2)
                         person_kanji = match_2[1].to_s
                 end
+                match_3 = entry_ary[2].match(format_3)
+                if (match_3)
+                        
+                end
 
                 puts serial_No.to_s + " : " + person_kana + ' : ' + person_kanji
         end #if
