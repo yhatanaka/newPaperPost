@@ -52,7 +52,7 @@ begin
                 if (match_3)
                         kouza_type = match_3[1]
                         kouza_No = match_3[2]
-                        paement = match_3[3]
+                        paement = match_3[3].sub(/,/, '')
                 end
 
 #                puts [serial_No, person_kana, person_kanji, kouza_type, kouza_No, paement].join(',')
