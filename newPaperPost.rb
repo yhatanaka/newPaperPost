@@ -40,7 +40,7 @@ begin
         match_1 = entry.match(format_1)
         if (match_1 && match_1[1].to_i == serial_No + 1)
                 serial_No = match_1[1].to_i
-# 半角カナ → 全角
+# 半角カナ → 全角カナ
                 person_kana = NKF.nkf("-Xw", match_1[2])
 # entry を改行で4行に分ける
                 entry_ary = entry.split("\n")
