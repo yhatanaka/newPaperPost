@@ -23,11 +23,14 @@ result_csv = ARGV.shift
     postSep = /^-{10,}\n/ 
 # スペース何個か + No. + (コード1,コード2) + 支払人カナ名称
     format_1 = /^\s+([0-9]+)\s[ 0-9]{20}\s{5}([ｧ-ﾝﾞﾟ]+\s?[ｧ-ﾝﾞﾟ]+).+$/
+# スペース + 支払人漢字名称（苗字 スペース 名前）スペース
     format_2 = /\s+(\S+\s*\S+)\s*$/
+# スペース + 9900 + スペース + ﾕｳﾁﾖｷﾞﾝｺｳ + スペース + 預金種目 + スペース + 口座番号 + スペース + 金額
     format_3 = /^\s+.[0-9]+\s+[ｧ-ﾝﾞﾟ]+\s+([0-9]+)\s+([0-9]+)\s+([0-9,]+)/
 
 # 1行目 連番，契約者半角カナ
     serial_No = 0
+# 結果（array の array, 最初のarrayは項目名）
     result_ary =[['No.', '支払人カナ名称', '支払人漢字名称', '預金種目', '口座番号', '金額']]
 
 begin
@@ -37,21 +40,24 @@ begin
     file.read.split(postSep).each do |entry|
 # format_1(つまり1行目のフォーマット) に合うか
         match_1 = entry.match(format_1)
+# 1行目のフォーマットにマッチして，しかも1個ずつ順番に見てるかどうか
         if (match_1 && match_1[1].to_i == serial_No + 1)
                 serial_No = match_1[1].to_i
 # 半角カナ → 全角カナ
                 person_kana = NKF.nkf("-Xw", match_1[2])
-# entry を改行で4行に分ける
+# entry を改行で3行に分ける
                 entry_ary = entry.split("\n")
 # format_2(2行目のフォーマット)に合うか
                 match_2 = entry_ary[1].match(format_2)
                 if (match_2)
+# null の時は空文字に（エラー対策）
                         person_kanji = match_2[1].to_s
                 end
                 match_3 = entry_ary[2].match(format_3)
                 if (match_3)
                         kouza_type = match_3[1]
                         kouza_No = match_3[2]
+# 金額の「,」取る
                         paement = match_3[3].sub(/,/, '')
                 end
 
