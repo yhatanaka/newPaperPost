@@ -1,7 +1,10 @@
 #!/usr/bin/ruby
 require 'pp'
 require 'nkf'
+require 'csv'
+
 src_txt = ARGV.shift
+result_csv = ARGV.shift
 
 # -----------------------------------------------------------------------------------------------------------
 # No. コード１，コード２       支払人カナ名称                        新規・変更区分
@@ -25,6 +28,7 @@ src_txt = ARGV.shift
 
 # 1行目 連番，契約者半角カナ
     serial_No = 0
+    result_ary =[['No.', '支払人カナ名称', '支払人漢字名称', '預金種目', '口座番号', '金額']]
 
 begin
   File.open(src_txt) do |file|
@@ -51,10 +55,18 @@ begin
                         paement = match_3[3]
                 end
 
-                puts [serial_No, person_kana, person_kanji, kouza_type, kouza_No, paement].join(',')
+#                puts [serial_No, person_kana, person_kanji, kouza_type, kouza_No, paement].join(',')
+                result_ary.push( [serial_No, person_kana, person_kanji, kouza_type, kouza_No, paement] )
         end #if
     end #each
   end #pen
+
+output_option = {}
+CSV.open(result_csv,"wb", output_option) do |outputCSV|
+	result_ary.each do |eachRow|
+		outputCSV << eachRow
+	end #each
+end #
 
 # 例外は小さい単位で捕捉する
 rescue SystemCallError => e
